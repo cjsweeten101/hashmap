@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'linked_list'
+
 # Implementation of custom HashMap class
 class HashMap
   attr_accessor :load_factor, :capacity
