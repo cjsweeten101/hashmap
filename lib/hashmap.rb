@@ -60,14 +60,17 @@ class HashMap
 
   def has?(key)
     hash_code = hash(key)
-    @buckets.each do |list|
-      next unless list.size.positive?
-
-      list.each do |entry|
-        hash_node = entry.value
-        return true if hash_node.key == hash_code
-      end
+    each do |node|
+      return true if node.key == hash_code
     end
     false
+  end
+
+  def each
+    @buckets.each do |list|
+      list.each do |entry|
+        yield(entry.value)
+      end
+    end
   end
 end
