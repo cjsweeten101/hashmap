@@ -2,6 +2,7 @@
 
 require_relative 'linked_list'
 require_relative 'hash_node'
+require 'pry-byebug'
 
 # Implementation of custom HashMap class
 class HashMap
@@ -31,6 +32,8 @@ class HashMap
   end
 
   def place_in_bucket(node, new_value, index)
+    raise IndexError if index.negative? || index >= @buckets.length
+
     value_updated = false
     @buckets[index].each do |entry|
       current_hash_node = entry.value
@@ -40,6 +43,18 @@ class HashMap
       value_updated = true
       break
     end
-    @buckets[index].append unless value_updated
+    @buckets[index].append(node) unless value_updated
+  end
+
+  def get(key)
+    hash_code = hash(key)
+    index = hash_code % @capacity
+    raise IndexError if index.negative? || index >= @buckets.length
+
+    @buckets[index].each do |e|
+      hash_node = e.value
+      return hash_node.value if hash_node.key == hash_code
+    end
+    nil
   end
 end
