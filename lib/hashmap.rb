@@ -9,7 +9,7 @@ class HashMap
 
   def initialize
     @capacity = 16
-    @buckets = Array.new(@capacity)
+    @buckets = Array.new(@capacity) { LinkedList.new }
     @load_factor = 0.75
   end
 
@@ -25,31 +25,21 @@ class HashMap
   def set(key, value)
     # TODO: implement growth factor
     hash_code = hash(key)
-    place_in_bucket(hash_code, value)
-  end
-
-  def place_in_bucket(hash_code, value)
     node = HashNode.new(hash_code, value)
-    bucket_index = hash_code % @capacity
 
-    bucket_obj = @buckets[bucket_index]
-    if bucket_obj.nil?
-      @buckets[bucket_index] = node
-    elsif bucket_obj.instance_of(HashNode) && bucket_obj.key == node.key
-      @buckets[bucket_index].value = value
-    else
-      handle_collisions(bucket_obj, node, bucket_index)
-    end
+    place_in_bucket(node, value, hash_code % @capacity)
   end
 
-  def handle_collisions(current_obj, new_node, index)
-    if current_obj.instance_of?(linked_list)
-      @buckets[index].append(new_node)
-    else
-      new_list = LinkedList.new
-      new_list.append(current_obj)
-      new_list.append(new_node)
-      @buckets[index] = new_list
+  def place_in_bucket(node, new_value, index)
+    value_updated = false
+    @buckets[index].each do |entry|
+      current_hash_node = entry.value
+      next unless current_hash_node.key == node.key
+
+      current_hash_node.value = new_value
+      value_updated = true
+      break
     end
+    @buckets[index].append unless value_updated
   end
 end
