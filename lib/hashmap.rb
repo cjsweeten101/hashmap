@@ -57,4 +57,17 @@ class HashMap
     end
     nil
   end
+
+  def has?(key)
+    hash_code = hash(key)
+    @buckets.each do |list|
+      next unless list.size.positive?
+
+      list.each do |entry|
+        hash_node = entry.value
+        return true if hash_node.key == hash_code
+      end
+    end
+    false
+  end
 end
