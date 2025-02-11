@@ -60,16 +60,36 @@ class HashMap
 
   def has?(key)
     hash_code = hash(key)
-    each do |node|
+    each_node do |node|
       return true if node.key == hash_code
     end
     false
   end
 
-  def each
-    @buckets.each do |list|
-      list.each do |entry|
-        yield(entry.value)
+  def remove(key)
+    result = nil
+    hash_code = hash(key)
+    each_list do |list|
+      i = 0
+      list.each do |node|
+        if node.value.key == hash_code
+          result = node.value.value
+          list.remove_at(i)
+        end
+        i += 1
+      end
+    end
+    result
+  end
+
+  def each_list(&block)
+    @buckets.each(&block)
+  end
+
+  def each_node
+    each_list do |list|
+      list.each do |node|
+        yield(node.value)
       end
     end
   end
