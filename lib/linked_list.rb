@@ -92,8 +92,13 @@ class LinkedList
       if i == index - 1
         previous_node = node
       elsif i == index
-        previous_node.next_node = node.next_node
-        deleted_node = node
+        if size == 1
+          deleted_node = @head
+          @head = nil
+        else
+          previous_node.next_node = node.next_node
+          deleted_node = node
+        end
       end
     end
     deleted_node
