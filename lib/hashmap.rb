@@ -82,6 +82,12 @@ class HashMap
     result
   end
 
+  def length
+    result = 0
+    each_node { |_n| result += 1 }
+    result
+  end
+
   def each_list(&block)
     @buckets.each(&block)
   end
