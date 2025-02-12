@@ -99,4 +99,9 @@ class HashMap
       end
     end
   end
+
+  def clear
+    @buckets = Array.new(@capacity) { LinkedList.new }
+    nil
+  end
 end
