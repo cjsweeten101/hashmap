@@ -26,7 +26,7 @@ class HashMap
   def set(key, value)
     # TODO: implement growth factor
     hash_code = hash(key)
-    node = HashNode.new(hash_code, value)
+    node = HashNode.new(key, value)
 
     place_in_bucket(node, value, hash_code % @capacity)
   end
@@ -47,32 +47,29 @@ class HashMap
   end
 
   def get(key)
-    hash_code = hash(key)
-    index = hash_code % @capacity
+    index = hash(key) % @capacity
     raise IndexError if index.negative? || index >= @buckets.length
 
     @buckets[index].each do |e|
       hash_node = e.value
-      return hash_node.value if hash_node.key == hash_code
+      return hash_node.value if hash_node.key == key
     end
     nil
   end
 
   def has?(key)
-    hash_code = hash(key)
     each_node do |node|
-      return true if node.key == hash_code
+      return true if node.key == key
     end
     false
   end
 
   def remove(key)
     result = nil
-    hash_code = hash(key)
     each_list do |list|
       i = 0
       list.each do |node|
-        if node.value.key == hash_code
+        if node.value.key == key
           result = node.value.value
           list.remove_at(i)
         end
@@ -103,5 +100,23 @@ class HashMap
   def clear
     @buckets = Array.new(@capacity) { LinkedList.new }
     nil
+  end
+
+  def keys
+    result = []
+    each_node { |n| result << n.key }
+    result
+  end
+
+  def values
+    result = []
+    each_node { |n| result << n.value }
+    result
+  end
+
+  def entries
+    result = []
+    each_node { |n| result << [n.key, n.value] }
+    result
   end
 end
