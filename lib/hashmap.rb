@@ -2,7 +2,6 @@
 
 require_relative 'linked_list'
 require_relative 'hash_node'
-require 'pry-byebug'
 
 # Implementation of custom HashMap class
 class HashMap
@@ -24,11 +23,11 @@ class HashMap
   end
 
   def set(key, value)
-    # TODO: implement growth factor
     hash_code = hash(key)
     node = HashNode.new(key, value)
 
     place_in_bucket(node, value, hash_code % @capacity)
+    grow if length > (@capacity * @load_factor)
   end
 
   def place_in_bucket(node, new_value, index)
@@ -44,6 +43,13 @@ class HashMap
       break
     end
     @buckets[index].append(node) unless value_updated
+  end
+
+  def grow
+    @capacity *= 2
+    old_entries = entries
+    @buckets = Array.new(@capacity) { LinkedList.new }
+    old_entries.each { |arr| set(arr[0], arr[1]) }
   end
 
   def get(key)
